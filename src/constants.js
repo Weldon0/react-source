@@ -8,4 +8,9 @@ export const PLACEMENT = Symbol.for('PLACEMENT'); // 插入节点
 export const UPDATE = Symbol.for('UPDATE'); // 更新节点
 export const DELETION = Symbol.for('DELETION'); // 删除节点
 
+export const TAG_CLASS = Symbol.for('TAG_CLASS'); // 类组件
+
+
+
+
 // 文本节点 tag: TAG_TEXT  type: ELEMENT_TEXT
