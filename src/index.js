@@ -10,19 +10,31 @@ class Counter extends React.Component {
   }
 
   onClick = () => {
-    this.setState(state => ({ number: state.number + 1}))
+    this.setState(state => ({number: state.number + 1}));
+    console.log(this.state);
+    this.setState({
+      number: '100',
+    })
+    console.log(this.state);
+    this.setState({
+      number: '880',
+    })
   }
 
   render() {
-    console.log(this);
     return (
       <div id="counter">
         <h1>{this.state.number}</h1>
-        <h2>{this.props.name}</h2>
         <button onClick={this.onClick}>数字加一</button>
       </div>
     )
   }
 }
 
-ReactDOM.render(<Counter name="计数器" />, document.getElementById('root'));
+console.log(Counter);
+
+ReactDOM.render(
+  <Counter
+    name="计数器"
+    id="test"
+  />, document.getElementById('root'));

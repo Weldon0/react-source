@@ -16,7 +16,6 @@ import {
   setProps,
 } from './uitls.js'
 
-// function reconcilerChildren() {}
 /**
 从根节点渲染和调度
 两个阶段
@@ -32,7 +31,6 @@ let currentRoot = null; // 渲染成功之后的当前根Root,界面上看到的
 let deletions = []; // 删除的节点不放到effect list里面,单独记录并执行
 
 export function scheduleRoot(rootFiber) {
-
   if (currentRoot && currentRoot.alternate) {
     workInProgressRoot = currentRoot.alternate;
     workInProgressRoot.alternate = currentRoot; // alternate更新
@@ -43,7 +41,7 @@ export function scheduleRoot(rootFiber) {
   } else if (currentRoot) { // 至少渲染过一次
     if (rootFiber) {
       rootFiber.alternate = currentRoot;
-      workInProgressRoot = rootFiber; 
+      workInProgressRoot = rootFiber;
     } else {
       workInProgressRoot = {
         ...currentRoot,
@@ -57,7 +55,7 @@ export function scheduleRoot(rootFiber) {
   // 清空更新指针(防止出错)
   workInProgressRoot.firstEffect = workInProgressRoot.lastEffect = workInProgressRoot.nextEffect = null;
    // 不会变化
-  
+
   nextUnitOfWork = workInProgressRoot; // 一直变化
 }
 
@@ -67,13 +65,13 @@ function performUnitOfWork(currentFiber) {
    *  1、为传入的Fiber创建stateNode，child链接第一个子节点。
    *  2、为自己的一级子节点创建Fiber，并sibling链接，不会创建stateNode。
    *  3、一级子节点的return指向父节点
-      4、所有一级子节点Fiber创建完，就会结束，判断当前帧是否还有执行时间，进入下一个执行单元
+   *  4、所有一级子节点Fiber创建完，就会结束，判断当前帧是否还有执行时间，进入下一个执行单元
    */
   beginWork(currentFiber); // 开始处理工作
   if (currentFiber.child) {
     return currentFiber.child; // root的child是A1
   }
-  
+
   while (currentFiber) {
     completeUintOfWork(currentFiber); // 没有child让自己完成
     if (currentFiber.sibling) {
@@ -88,7 +86,7 @@ function performUnitOfWork(currentFiber) {
 // 收集副作用fiber，组成effect list
 // 每个fiber有两个属性，firstEffectList指向第一个有副作用的子fiber,lasterEffect指向最后一个有更新的zifiber
 // 中间的nextEffect做成一个单链表，firstEffect=大儿子.nextEffect=二儿子.nextEffect=三儿子
-function completeUintOfWork(currentFiber) { // 第一个完成A1TEXT 
+function completeUintOfWork(currentFiber) { // 第一个完成A1TEXT
   let returnFiber = currentFiber.return; // A1
   if (returnFiber) {
 
@@ -107,10 +105,10 @@ function completeUintOfWork(currentFiber) { // 第一个完成A1TEXT
     const effectTag = currentFiber.effectTag;
     if (effectTag) { // 说明有副作用，第一个次是增加
     /**
-      每一个fiber
-      firstEffect:第一个副作用节点
-      lastEffect: 最后一个副作用节点
-      中间的通过nextEffect做成单链表
+        每一个fiber
+        firstEffect:第一个副作用节点
+        lastEffect: 最后一个副作用节点
+        中间的通过nextEffect做成单链表
      */
       if (returnFiber.lastEffect) {
         returnFiber.lastEffect.nextEffect = currentFiber;
@@ -150,7 +148,6 @@ function updateClassComponent(currentFiber) {
     currentFiber.updateQueue = new UpdateQueue();
   }
   // 组件实例state赋值
-  console.log(currentFiber);
   currentFiber.stateNode.state = currentFiber.updateQueue.forcedUpdate(currentFiber.stateNode.state);
 
   let newElement = currentFiber.stateNode.render();
@@ -213,7 +210,7 @@ function reconcileChildren(currentFiber, newChildren) {
   if (oldFiber) {
     oldFiber.fistEfficient = oldFiber.lastEffect = oldFiber.nextEffect = null;
   }
-  
+
   let prevSibling; // 上一个新的子fiber
   while(newChildIndex < newChildren.length || oldFiber) {
     let tag;
@@ -231,7 +228,7 @@ function reconcileChildren(currentFiber, newChildren) {
     } else if (typeof newChild.type === 'string') {
       tag = TAG_HOST; // 原生DOM节点
     }
-    
+
     if (sameType) {
       if (oldFiber.alternate) { // 至少已经更新过一次,然后复用上上次fiber
         newFiber = oldFiber.alternate;
@@ -266,7 +263,7 @@ function reconcileChildren(currentFiber, newChildren) {
           nextEffect: null, // effect list 单链表  和完成顺序一样，但是节点会少，只放改动的节点
         }
       }
-      
+
       if (oldFiber) {
         oldFiber.effectTag = DELETION;
         deletions.push(oldFiber);
@@ -277,7 +274,7 @@ function reconcileChildren(currentFiber, newChildren) {
     if (oldFiber) {
       oldFiber = oldFiber.sibling;
     }
-    
+
     if (newFiber) {
       if (newChildIndex === 0) { // 第一个子元素
         currentFiber.child = newFiber;
@@ -295,6 +292,7 @@ function reconcileChildren(currentFiber, newChildren) {
 function workLoop(deadline) {
   let shouldYield = false; // 是否让出时间片(控制权)
   while (nextUnitOfWork && !shouldYield) {
+    debugger
     nextUnitOfWork = performUnitOfWork(nextUnitOfWork); // root的下一个工作单元是第一个子节点A1
     shouldYield = deadline.timeRemaining() < 1; // ms 没有时间让出时间片
   }
@@ -348,7 +346,7 @@ function commitWork(currentFiber) {
           currentFiber.props
         );
       }
-        
+
     }
   }
 
